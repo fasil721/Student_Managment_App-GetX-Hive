@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -11,11 +12,10 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => AddRecord()),
-          );
-        },
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => Addrecord(),
+        ),
       ),
       backgroundColor: Colors.grey[200],
       drawer: Drawer(),
@@ -47,10 +47,11 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
+      body: ListView(
+        scrollDirection: Axis.vertical,
         children: [
           Container(
-            // padding: EdgeInsets.only(left:23),
+            alignment: Alignment.center,
             child: Text(
               "Student Records",
               style: GoogleFonts.recursive(
@@ -70,7 +71,7 @@ class HomePage extends StatelessWidget {
                 if (box.values.isEmpty) {
                   return Center(
                     child: Text(
-                      "No data available!",
+                      "No records available!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Montserrat',
@@ -82,24 +83,42 @@ class HomePage extends StatelessWidget {
                 }
                 return Expanded(
                   child: Container(
-                    height: 100.0,
+                    height: MediaQuery.of(context).size.height,
                     child: ListView.builder(
                       itemCount: box.length,
                       itemBuilder: (context, index) {
                         Record? record = box.getAt(index);
-                        return ListTile(
-                          onLongPress: () async {
-                            await box.deleteAt(index);
-                          },
-                          title: Text(
-                            record!.title,
-                            style: TextStyle(
-                                fontSize: 20, fontFamily: 'Montserrat'),
-                          ),
-                          subtitle: Text(
-                            record.description,
-                            style: TextStyle(
-                                fontSize: 16, fontFamily: 'Montserrat'),
+                        return Container(
+                          padding: EdgeInsets.all(10),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 16.0,
+                            ),
+                            leading: CircleAvatar(
+                              backgroundImage: AssetImage(
+                                "assets/images/av1.png",
+                              ),
+                              radius: 25,
+                            ),
+                            tileColor: Colors.white,
+                            onTap: () {},
+                            onLongPress: () async {
+                              await box.deleteAt(index);
+                            },
+                            title: Text(
+                              record!.title,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                            // subtitle: Text(
+                            //   record.place,
+                            //   style: TextStyle(
+                            //       fontSize: 16, fontFamily: 'Montserrat'),
+                            // ),
                           ),
                         );
                       },

@@ -1,57 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:student_records/pages/record_adapter.dart';
 
-class AddRecord extends StatefulWidget {
+class Addrecord extends StatefulWidget {
   final formkey = GlobalKey<FormState>();
   @override
-  _AddRecordState createState() => _AddRecordState();
+  _AddrecordState createState() => _AddrecordState();
 }
 
-class _AddRecordState extends State<AddRecord> {
-  late String title, description;
-
+class _AddrecordState extends State<Addrecord> {
+  late String title, place;
   submitData() async {
     if (widget.formkey.currentState!.validate()) {
       Box<Record> todoBox = Hive.box<Record>('records');
-      todoBox.add(Record(title, description));
+      todoBox.add(
+        Record(title, place),
+      );
       Navigator.of(context).pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Add todo", style: TextStyle(fontFamily: 'Montserrat')),
-      ),
-      body: Form(
+    return AlertDialog(
+      title: Text("Add New Student"),
+      content: Form(
         key: widget.formkey,
-        child: ListView(
-          children: [
-            TextFormField(
-              decoration: InputDecoration(hintText: 'Add title'),
-              onChanged: (value) {
-                setState(() {
-                  title = value;
-                });
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(hintText: 'Add description'),
-              onChanged: (value) {
-                setState(
-                  () {
-                    description = value;
-                  },
-                );
-              },
-            ),
-            ElevatedButton(onPressed: submitData, child: Text('Submit Data'))
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(height: 8),
+              buildName(),
+              SizedBox(height: 8),
+              buildAge(),
+            ],
+          ),
         ),
       ),
+      actions: <Widget>[
+        submitButton(context),
+      ],
     );
   }
+
+  Widget buildName() => Container(
+        child: TextFormField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter Student Name',
+          ),
+          validator: (value) {
+            if (value == "") {
+              return "Student Name required";
+            }
+          },
+          onChanged: (value) {
+            setState(
+              () {
+                title = value;
+              },
+            );
+          },
+        ),
+      );
+  Widget buildAge() => Container(
+        child: TextFormField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter Student Place',
+          ),
+          validator: (value) {
+            if (value == "") {
+              return "Place Name required";
+            }
+          },
+          onChanged: (value) {
+            setState(
+              () {
+                place = value;
+              },
+            );
+          },
+        ),
+      );
+  Widget submitButton(BuildContext context) => Container(
+        alignment: Alignment.center,
+        child: ElevatedButton(
+          onPressed: submitData,
+          child: Text(
+            'Save Data',
+          ),
+        ),
+      );
 }

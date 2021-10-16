@@ -29,7 +29,7 @@ class RecordAdapter extends TypeAdapter<Record> {
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.description);
+      ..write(obj.place);
   }
 
   @override

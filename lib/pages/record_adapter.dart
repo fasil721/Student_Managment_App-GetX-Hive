@@ -7,7 +7,7 @@ class Record {
   @HiveField(0)
   String title;
   @HiveField(1)
-  String description;
+  String place;
 
-  Record(this.title, this.description);
+  Record(this.title, this.place);
 }

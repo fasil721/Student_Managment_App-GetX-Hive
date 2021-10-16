@@ -91,6 +91,11 @@ class HomePage extends StatelessWidget {
                         return Container(
                           padding: EdgeInsets.all(10),
                           child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 10.0,
                               horizontal: 16.0,

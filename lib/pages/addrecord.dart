@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:student_records/pages/record_adapter.dart';
 
@@ -24,7 +25,15 @@ class _AddrecordState extends State<Addrecord> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Add New Student"),
+      // backgroundColor: Colors.grey[200],
+      title: Text(
+        "Add New Student",
+        style: GoogleFonts.rubik(
+          fontStyle: FontStyle.normal,
+          fontWeight: FontWeight.w500,
+          fontSize: 20,
+        ),
+      ),
       content: Form(
         key: widget.formkey,
         child: SingleChildScrollView(
@@ -40,6 +49,7 @@ class _AddrecordState extends State<Addrecord> {
         ),
       ),
       actions: <Widget>[
+        cancelButton(context),
         submitButton(context),
       ],
     );
@@ -85,13 +95,21 @@ class _AddrecordState extends State<Addrecord> {
           },
         ),
       );
-  Widget submitButton(BuildContext context) => Container(
-        alignment: Alignment.center,
-        child: ElevatedButton(
-          onPressed: submitData,
-          child: Text(
-            'Save Data',
-          ),
+  Widget cancelButton(BuildContext context) => TextButton(
+        child: Text(
+          'Cancel',
+          style: TextStyle(color: Colors.black),
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      );
+  Widget submitButton(BuildContext context) => ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.grey[200],
+        ),
+        onPressed: submitData,
+        child: Text(
+          'Save',
+          style: TextStyle(color: Colors.black),
         ),
       );
 }

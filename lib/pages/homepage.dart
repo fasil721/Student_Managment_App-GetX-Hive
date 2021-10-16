@@ -5,20 +5,29 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:student_records/pages/addrecord.dart';
 import 'package:student_records/pages/record_adapter.dart';
+import 'package:student_records/pages/student_detials.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.white,
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
         onPressed: () => showDialog(
           context: context,
           builder: (context) => Addrecord(),
         ),
       ),
       backgroundColor: Colors.grey[200],
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.grey[200],
+        ),
+      ),
       appBar: AppBar(
         leadingWidth: 75,
         toolbarHeight: 70,
@@ -97,7 +106,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
-                              vertical: 10.0,
+                              vertical: 7.0,
                               horizontal: 16.0,
                             ),
                             leading: CircleAvatar(
@@ -107,7 +116,15 @@ class HomePage extends StatelessWidget {
                               radius: 25,
                             ),
                             tileColor: Colors.white,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StudentDetails(
+                                      record!.title, record.place),
+                                ),
+                              );
+                            },
                             onLongPress: () async {
                               await box.deleteAt(index);
                             },
@@ -211,7 +228,9 @@ class _Students extends StatelessWidget {
 class _detialspage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+    );
   }
 }
 

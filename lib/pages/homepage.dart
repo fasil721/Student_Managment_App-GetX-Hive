@@ -91,61 +91,59 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 }
-                return Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: box.length,
-                      itemBuilder: (context, index) {
-                        Record? record = box.getAt(index);
-                        return Container(
-                          padding: EdgeInsets.all(6),
-                          child: ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 7.0,
-                              horizontal: 16.0,
-                            ),
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                "assets/images/av1.png",
-                              ),
-                              radius: 25,
-                            ),
-                            tileColor: Colors.white,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StudentDetails(
-                                      record!.title,
-                                      record.age,
-                                      record.place,
-                                      index,
-                                      box),
-                                ),
-                              );
-                            },
-                            // onLongPress: () async {
-                            //   await box.deleteAt(index);
-                            // },
-                            title: Text(
-                              record!.title,
-                              style: GoogleFonts.montserrat(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FontStyle.normal,
-                              ),
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: box.length,
+                    itemBuilder: (context, index) {
+                      Record? record = box.getAt(index);
+                      return Container(
+                        padding: EdgeInsets.all(6),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 7.0,
+                            horizontal: 16.0,
+                          ),
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(
+                              "assets/images/av1.png",
+                            ),
+                            radius: 25,
+                          ),
+                          tileColor: Colors.white,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StudentDetails(
+                                    record!.title,
+                                    record.age,
+                                    record.place,
+                                    index,
+                                    box),
+                              ),
+                            );
+                          },
+                          // onLongPress: () async {
+                          //   await box.deleteAt(index);
+                          // },
+                          title: Text(
+                            record!.title,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },

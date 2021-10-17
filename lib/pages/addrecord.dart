@@ -6,6 +6,15 @@ import 'package:student_records/pages/record_adapter.dart';
 
 class Addrecord extends StatefulWidget {
   final formkey = GlobalKey<FormState>();
+  // final Record? record;
+  // final Function(String title, String place) onClickedDone;
+
+  // Addrecord({
+  //   Key? key,
+  //   this.record,
+  //   required this.onClickedDone,
+  // }) : super(key: key);
+
   @override
   _AddrecordState createState() => _AddrecordState();
 }

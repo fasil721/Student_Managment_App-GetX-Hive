@@ -1,16 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:student_records/pages/addrecord.dart';
+import 'package:student_records/pages/homepage.dart';
+import 'package:student_records/pages/updaterecord.dart';
 
 class StudentDetails extends StatelessWidget {
   String name;
   String place;
-  StudentDetails(String this.name, String this.place);
+  int index;
+  var box;
+  StudentDetails(
+      String this.name, String this.place, int this.index, var this.box);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
+        actions: [
+          // Container(
+          //   child: ValueListenableBuilder(
+          //       valueListenable: Hive.box<Record>('records').listenable(),
+          //       builder: (context, Box<Record> box, _) {
+          //         temp = box;
+          //         return Text("s");
+          //       }),
+          // ),
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => UpdateRecord(
+                  title2: name,
+                  place2: place,
+                  box2: box,
+                  index2: index,
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.black,
+            ),
+            onPressed: () async {
+              await box.deleteAt(index);
+              Navigator.pop(context);
+            },
+          ),
+        ],
         elevation: 0.0,
         leadingWidth: 75,
         toolbarHeight: 70,
@@ -21,7 +64,12 @@ class StudentDetails extends StatelessWidget {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
           },
         ),
       ),
@@ -77,7 +125,7 @@ class Details extends StatelessWidget {
               child: Text(
                 name,
                 style: GoogleFonts.rubik(
-                  fontSize: 17,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.normal,
                 ),

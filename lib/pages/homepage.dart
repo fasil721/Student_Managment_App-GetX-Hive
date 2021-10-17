@@ -94,11 +94,12 @@ class HomePage extends StatelessWidget {
                   child: Container(
                     height: MediaQuery.of(context).size.height,
                     child: ListView.builder(
+                      scrollDirection: Axis.vertical,
                       itemCount: box.length,
                       itemBuilder: (context, index) {
                         Record? record = box.getAt(index);
                         return Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(6),
                           child: ListTile(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
@@ -121,13 +122,13 @@ class HomePage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => StudentDetails(
-                                      record!.title, record.place),
+                                      record!.title, record.place, index, box),
                                 ),
                               );
                             },
-                            onLongPress: () async {
-                              await box.deleteAt(index);
-                            },
+                            // onLongPress: () async {
+                            //   await box.deleteAt(index);
+                            // },
                             title: Text(
                               record!.title,
                               style: GoogleFonts.montserrat(
@@ -136,11 +137,6 @@ class HomePage extends StatelessWidget {
                                 fontStyle: FontStyle.normal,
                               ),
                             ),
-                            // subtitle: Text(
-                            //   record.place,
-                            //   style: TextStyle(
-                            //       fontSize: 16, fontFamily: 'Montserrat'),
-                            // ),
                           ),
                         );
                       },

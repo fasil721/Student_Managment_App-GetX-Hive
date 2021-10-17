@@ -6,11 +6,12 @@ import 'package:student_records/pages/updaterecord.dart';
 
 class StudentDetails extends StatelessWidget {
   String name;
+  String age;
   String place;
   int index;
   var box;
-  StudentDetails(
-      String this.name, String this.place, int this.index, var this.box);
+  StudentDetails(String this.name, String this.age, String this.place,
+      int this.index, var this.box);
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class StudentDetails extends StatelessWidget {
                 context: context,
                 builder: (context) => UpdateRecord(
                   title2: name,
+                  age2: age,
                   place2: place,
                   box2: box,
                   index2: index,
@@ -50,7 +52,12 @@ class StudentDetails extends StatelessWidget {
             ),
             onPressed: () async {
               await box.deleteAt(index);
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+              );
             },
           ),
         ],
@@ -83,6 +90,7 @@ class StudentDetails extends StatelessWidget {
             ),
           ),
           Details(name, "Name :  "),
+          Details(age, "Age :  "),
           Details(place, "Place :  ")
         ],
       ),

@@ -6,26 +6,23 @@ import 'package:student_records/pages/record_adapter.dart';
 
 class Addrecord extends StatefulWidget {
   final formkey = GlobalKey<FormState>();
-  // final Record? record;
-  // final Function(String title, String place) onClickedDone;
-
-  // Addrecord({
-  //   Key? key,
-  //   this.record,
-  //   required this.onClickedDone,
-  // }) : super(key: key);
 
   @override
   _AddrecordState createState() => _AddrecordState();
 }
 
 class _AddrecordState extends State<Addrecord> {
-  late String title, place;
+  late var title, age, place;
+  // late var gender = "";
   submitData() async {
     if (widget.formkey.currentState!.validate()) {
       Box<Record> todoBox = Hive.box<Record>('records');
       todoBox.add(
-        Record(title, place),
+        Record(
+          title,
+          age,
+          place,
+        ),
       );
       Navigator.of(context).pop();
     }
@@ -53,6 +50,8 @@ class _AddrecordState extends State<Addrecord> {
               buildName(),
               SizedBox(height: 8),
               buildAge(),
+              SizedBox(height: 8),
+              buildPlace(),
             ],
           ),
         ),
@@ -64,6 +63,22 @@ class _AddrecordState extends State<Addrecord> {
     );
   }
 
+  // Widget RadioButtons() => Row(
+  //       children: [
+  //         RadioListTile<String>(
+  //           title: Text('Expense'),
+  //           value: "male",
+  //           groupValue: gender,
+  //           onChanged: (value) => setState(() => gender = value!),
+  //         ),
+  //         RadioListTile<String>(
+  //           title: Text('Income'),
+  //           value: "female",
+  //           groupValue: gender,
+  //           onChanged: (value) => setState(() => gender = value!),
+  //         ),
+  //       ],
+  //     );
   Widget buildName() => Container(
         child: TextFormField(
           decoration: InputDecoration(
@@ -84,11 +99,11 @@ class _AddrecordState extends State<Addrecord> {
           },
         ),
       );
-  Widget buildAge() => Container(
+  Widget buildPlace() => Container(
         child: TextFormField(
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            hintText: 'Enter Student Place',
+            hintText: 'Enter Place Name',
           ),
           validator: (value) {
             if (value == "") {
@@ -99,6 +114,26 @@ class _AddrecordState extends State<Addrecord> {
             setState(
               () {
                 place = value;
+              },
+            );
+          },
+        ),
+      );
+  Widget buildAge() => Container(
+        child: TextFormField(
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter Student Age',
+          ),
+          validator: (value) {
+            if (value == "") {
+              return "Student Age required";
+            }
+          },
+          onChanged: (value) {
+            setState(
+              () {
+                age = value;
               },
             );
           },

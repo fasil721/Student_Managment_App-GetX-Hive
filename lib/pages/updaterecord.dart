@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:student_records/pages/record_adapter.dart';
 import 'package:student_records/pages/student_detials.dart';
 
@@ -9,12 +8,14 @@ class UpdateRecord extends StatefulWidget {
   UpdateRecord({
     Key? key,
     required this.title2,
+    required this.age2,
     required this.place2,
     required this.box2,
     required this.index2,
   }) : super(key: key);
 
   late String title2;
+  late String age2;
   late String place2;
   late dynamic box2;
   late int index2;
@@ -22,22 +23,11 @@ class UpdateRecord extends StatefulWidget {
   final formkey = GlobalKey<FormState>();
 
   @override
-  _UpdateRecordState createState() =>
-      _UpdateRecordState(title2, place2, box2, index2);
+  _UpdateRecordState createState() => _UpdateRecordState();
 }
 
 class _UpdateRecordState extends State<UpdateRecord> {
-  late String title2;
-  late String place2;
-  late dynamic box2;
-  late int index2;
-  _UpdateRecordState(
-    String this.title2,
-    String this.place2,
-    dynamic this.box2,
-    int this.index2,
-  );
-  late String title, place;
+  //late String title, place;
   // submitData() async {
   //   if (widget.formkey.currentState!.validate()) {
   //     Box<Record> record = Hive.box<Record>('records');
@@ -68,6 +58,8 @@ class _UpdateRecordState extends State<UpdateRecord> {
               buildName(),
               SizedBox(height: 8),
               buildAge(),
+              SizedBox(height: 8),
+              buildPlace(),
             ],
           ),
         ),
@@ -79,12 +71,38 @@ class _UpdateRecordState extends State<UpdateRecord> {
     );
   }
 
+  Widget buildAge() => Container(
+        child: Builder(builder: (context) {
+          Record? record = widget.box2.getAt(widget.index2);
+          return TextFormField(
+            initialValue: widget.age2,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter Student Age',
+            ),
+            validator: (value) {
+              if (value == "") {
+                return "Student Age required";
+              }
+            },
+            onChanged: (value) {
+              setState(
+                () {
+                  record!.age = value;
+                  record.save();
+                },
+              );
+            },
+          );
+        }),
+      );
+
   Widget buildName() => Container(
         child: Builder(
           builder: (context) {
-            Record? record = box2.getAt(index2);
+            Record? record = widget.box2.getAt(widget.index2);
             return TextFormField(
-              initialValue: title2,
+              initialValue: widget.title2,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter Student Name',
@@ -107,18 +125,18 @@ class _UpdateRecordState extends State<UpdateRecord> {
           },
         ),
       );
-  Widget buildAge() => Container(
+  Widget buildPlace() => Container(
         child: Builder(builder: (context) {
-          Record? record = box2.getAt(index2);
+          Record? record = widget.box2.getAt(widget.index2);
           return TextFormField(
-            initialValue: place2,
+            initialValue: widget.place2,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Enter Student Place',
             ),
             validator: (value) {
               if (value == "") {
-                return "Place Name required";
+                return "Student Place required";
               }
             },
             onChanged: (value) {
@@ -140,7 +158,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
         onPressed: () => Navigator.of(context).pop(),
       );
   Widget submitButton(BuildContext context) => Builder(builder: (context) {
-        Record? record = box2.getAt(index2);
+        Record? record = widget.box2.getAt(widget.index2);
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.grey[200],
@@ -150,9 +168,10 @@ class _UpdateRecordState extends State<UpdateRecord> {
             MaterialPageRoute(
               builder: (context) => StudentDetails(
                 record!.title,
+                record.age,
                 record.place,
-                index2,
-                box2,
+                widget.index2,
+                widget.box2,
               ),
             ),
           ),

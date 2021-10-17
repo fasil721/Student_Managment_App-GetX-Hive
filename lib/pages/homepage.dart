@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:student_records/pages/addrecord.dart';
+import 'package:student_records/pages/student_search.dart';
 import 'package:student_records/pages/record_adapter.dart';
 import 'package:student_records/pages/student_detials.dart';
 
@@ -50,7 +51,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               showSearch(
                 context: context,
-                delegate: _StudentSearch(),
+                delegate: StudentSearch(),
               );
             },
           ),
@@ -122,7 +123,11 @@ class HomePage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => StudentDetails(
-                                      record!.title, record.place, index, box),
+                                      record!.title,
+                                      record.age,
+                                      record.place,
+                                      index,
+                                      box),
                                 ),
                               );
                             },
@@ -150,118 +155,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-// Expanded(
-//   child: ListView(
-//     shrinkWrap: true,
-//     scrollDirection: Axis.vertical,
-//     children: [
-//       Container(
-//         padding: EdgeInsets.only(left: 23),
-//         child: Text(
-//           "Student Records",
-//           style: GoogleFonts.recursive(
-//             fontStyle: FontStyle.normal,
-//             fontWeight: FontWeight.w400,
-//             fontSize: 30,
-//           ),
-//         ),
-//       ),
-class _Students extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        print("object");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => _detialspage(),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        height: 75,
-        margin: EdgeInsets.only(
-          left: 25,
-          right: 25,
-          top: 10,
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 12),
-              child: CircleAvatar(
-                backgroundImage: AssetImage(
-                  "assets/images/av1.png",
-                ),
-                radius: 25,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                "John",
-                style: GoogleFonts.montserrat(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _detialspage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-    );
-  }
-}
-
-class _StudentSearch extends SearchDelegate<String> {
-  final cities = ['Ankara', 'İzmir', 'İstanbul', 'Samsun', 'Sakarya'];
-  var recentCities = ['Ankara'];
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    IconButton(
-      icon: Icon(Icons.cabin),
-      onPressed: () {},
-    );
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    IconButton(
-      icon: Icon(
-        (Icons.arrow_back),
-      ),
-      onPressed: () {},
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    throw UnimplementedError();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [],
-        ),
-      );
 }

@@ -72,29 +72,31 @@ class _UpdateRecordState extends State<UpdateRecord> {
   }
 
   Widget buildAge() => Container(
-        child: Builder(builder: (context) {
-          Record? record = widget.box2.getAt(widget.index2);
-          return TextFormField(
-            initialValue: widget.age2,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter Student Age',
-            ),
-            validator: (value) {
-              if (value == "") {
-                return "Student Age required";
-              }
-            },
-            onChanged: (value) {
-              setState(
-                () {
-                  record!.age = value;
-                  record.save();
-                },
-              );
-            },
-          );
-        }),
+        child: Builder(
+          builder: (context) {
+            Record? record = widget.box2.getAt(widget.index2);
+            return TextFormField(
+              initialValue: widget.age2,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter Student Age',
+              ),
+              validator: (value) {
+                if (value == "") {
+                  return "Student Age required";
+                }
+              },
+              onChanged: (value) {
+                setState(
+                  () {
+                    record!.age = value;
+                    record.save();
+                  },
+                );
+              },
+            );
+          },
+        ),
       );
 
   Widget buildName() => Container(
@@ -119,36 +121,37 @@ class _UpdateRecordState extends State<UpdateRecord> {
                     record.save();
                   },
                 );
-                setState(() {});
               },
             );
           },
         ),
       );
   Widget buildPlace() => Container(
-        child: Builder(builder: (context) {
-          Record? record = widget.box2.getAt(widget.index2);
-          return TextFormField(
-            initialValue: widget.place2,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter Student Place',
-            ),
-            validator: (value) {
-              if (value == "") {
-                return "Student Place required";
-              }
-            },
-            onChanged: (value) {
-              setState(
-                () {
-                  record!.place = value;
-                  record.save();
-                },
-              );
-            },
-          );
-        }),
+        child: Builder(
+          builder: (context) {
+            Record? record = widget.box2.getAt(widget.index2);
+            return TextFormField(
+              initialValue: widget.place2,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter Student Place',
+              ),
+              validator: (value) {
+                if (value == "") {
+                  return "Student Place required";
+                }
+              },
+              onChanged: (value) {
+                setState(
+                  () {
+                    record!.place = value;
+                    record.save();
+                  },
+                );
+              },
+            );
+          },
+        ),
       );
   Widget cancelButton(BuildContext context) => TextButton(
         child: Text(
@@ -157,28 +160,34 @@ class _UpdateRecordState extends State<UpdateRecord> {
         ),
         onPressed: () => Navigator.of(context).pop(),
       );
-  Widget submitButton(BuildContext context) => Builder(builder: (context) {
-        Record? record = widget.box2.getAt(widget.index2);
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.grey[200],
-          ),
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => StudentDetails(
-                record!.title,
-                record.age,
-                record.place,
-                widget.index2,
-                widget.box2,
-              ),
+  Widget submitButton(BuildContext context) => Builder(
+        builder: (context) {
+          Record? record = widget.box2.getAt(widget.index2);
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey[200],
             ),
-          ),
-          child: Text(
-            'Save',
-            style: TextStyle(color: Colors.black),
-          ),
-        );
-      });
+            onPressed: () {
+              if (widget.formkey.currentState!.validate()) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StudentDetails(
+                      record!.title,
+                      record.age,
+                      record.place,
+                      widget.index2,
+                      widget.box2,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        },
+      );
 }

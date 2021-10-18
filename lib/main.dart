@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:student_records/pages/homepage.dart';
+import 'package:student_records/pages/home_page.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:student_records/pages/record_adapter.dart';

@@ -1,14 +1,18 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:student_records/pages/addrecord.dart';
+import 'package:student_records/pages/add_record.dart';
 import 'package:student_records/pages/student_search.dart';
 import 'package:student_records/pages/record_adapter.dart';
 import 'package:student_records/pages/student_detials.dart';
 
 class HomePage extends StatelessWidget {
+  var names;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +102,9 @@ class HomePage extends StatelessWidget {
                     itemCount: box.length,
                     itemBuilder: (context, index) {
                       Record? record = box.getAt(index);
+                      this.names = record!.title;
+                      print(record.pic);
+
                       return Container(
                         padding: EdgeInsets.all(6),
                         child: ListTile(
@@ -122,19 +129,17 @@ class HomePage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => StudentDetails(
-                                    record!.title,
-                                    record.age,
-                                    record.place,
-                                    index,
-                                    box),
+                                  record.title,
+                                  record.age,
+                                  record.place,
+                                  index,
+                                  box,
+                                ),
                               ),
                             );
                           },
-                          // onLongPress: () async {
-                          //   await box.deleteAt(index);
-                          // },
                           title: Text(
-                            record!.title,
+                            record.title,
                             style: GoogleFonts.montserrat(
                               fontSize: 15,
                               fontWeight: FontWeight.w500,
@@ -153,4 +158,14 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+showImage(pic) {
+  print(pic);
+  // if (pic != null) {
+  //   Uint8List imageBytes = base64Decode(pic);
+  //   return imageBytes;
+  // } else {
+  //   return "assets/images/av1.png";
+  // }
 }

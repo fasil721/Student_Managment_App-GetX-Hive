@@ -20,19 +20,22 @@ class RecordAdapter extends TypeAdapter<Record> {
       fields[0] as dynamic,
       fields[1] as dynamic,
       fields[2] as dynamic,
+      fields[3] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, Record obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
       ..write(obj.age)
       ..writeByte(2)
-      ..write(obj.place);
+      ..write(obj.place)
+      ..writeByte(3)
+      ..write(obj.pic);
   }
 
   @override

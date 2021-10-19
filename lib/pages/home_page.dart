@@ -108,7 +108,57 @@ class HomePage extends StatelessWidget {
                       if (record.pic != null) {
                         imageBytes = base64Decode(record.pic);
                         //showImage(record.pic);
-                      } else {}
+                        return Container(
+                          padding: EdgeInsets.all(6),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 7.0,
+                              horizontal: 16.0,
+                            ),
+                            leading: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Image.memory(
+                                imageBytes,
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            tileColor: Colors.white,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StudentDetails(
+                                    record.title,
+                                    record.age,
+                                    record.place,
+                                    record.pic,
+                                    index,
+                                    box,
+                                  ),
+                                ),
+                              );
+                            },
+                            title: Text(
+                              record.title,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
                       return Container(
                         padding: EdgeInsets.all(6),
                         child: ListTile(
@@ -121,17 +171,11 @@ class HomePage extends StatelessWidget {
                             vertical: 7.0,
                             horizontal: 16.0,
                           ),
-                          leading: Container(
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(
+                              "assets/images/av1.png",
                             ),
-                            child: Image.memory(
-                              imageBytes,
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.cover,
-                            ),
+                            radius: 25,
                           ),
                           tileColor: Colors.white,
                           onTap: () {

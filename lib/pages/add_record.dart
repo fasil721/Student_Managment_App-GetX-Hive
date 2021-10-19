@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:student_records/pages/home_page.dart';
 import 'package:student_records/pages/record_adapter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -20,7 +22,7 @@ class _AddrecordState extends State<Addrecord> {
   late var title, age, place;
   dynamic pic;
 
-  submitData() async {
+  submitData(context) async {
     if (widget.formkey.currentState!.validate()) {
       Box<Record> todoBox = Hive.box<Record>('records');
       todoBox.add(
@@ -31,7 +33,12 @@ class _AddrecordState extends State<Addrecord> {
           pic,
         ),
       );
-      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
     }
   }
 
@@ -194,7 +201,26 @@ class _AddrecordState extends State<Addrecord> {
         style: ElevatedButton.styleFrom(
           primary: Colors.grey[200],
         ),
-        onPressed: submitData,
+        onPressed: () {
+          if (widget.formkey.currentState!.validate()) {
+            Box<Record> todoBox = Hive.box<Record>('records');
+            todoBox.add(
+              Record(
+                title,
+                age,
+                place,
+                pic,
+              ),
+            );
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          }
+        },
         child: Text(
           'Save',
           style: TextStyle(color: Colors.black),

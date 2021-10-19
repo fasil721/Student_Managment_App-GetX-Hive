@@ -160,6 +160,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
             ),
             onPressed: () {
               if (widget.formkey.currentState!.validate()) {
+                Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

@@ -52,6 +52,7 @@ class StudentDetails extends StatelessWidget {
             ),
             onPressed: () async {
               await box.deleteAt(index);
+              Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

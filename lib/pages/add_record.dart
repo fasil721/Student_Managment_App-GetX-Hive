@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +20,6 @@ class _AddrecordState extends State<Addrecord> {
   late var title, age, place;
   dynamic pic;
 
-  // late var gender = "";
   submitData() async {
     if (widget.formkey.currentState!.validate()) {
       Box<Record> todoBox = Hive.box<Record>('records');
@@ -98,76 +98,21 @@ class _AddrecordState extends State<Addrecord> {
     return GestureDetector(
       child: CircleAvatar(
         backgroundImage: AssetImage(
-          "assets/images/av1.png",
+          "assets/images/av2.jpg",
         ),
-        radius: 60,
+        radius: 70,
       ),
       onTap: () => pickImage(ImageSource.gallery),
     );
   }
 
-  Widget buildImage() => Container(
-        child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 0.0,
-            horizontal: 15.0,
-          ),
-          title: Row(
-            children: [
-              Text(
-                "Add Photo",
-                style: GoogleFonts.rubik(
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15,
-                ),
-              ),
-              GestureDetector(
-                child: Container(
-                  padding: EdgeInsets.only(left: 30, right: 0),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      "assets/images/ic1.jpg",
-                    ),
-                    radius: 19,
-                  ),
-                ),
-                onTap: () => pickImage(ImageSource.gallery),
-              ),
-              GestureDetector(
-                child: Container(
-                  padding: EdgeInsets.only(left: 10, right: 5),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage(
-                      "assets/images/ic2.png",
-                    ),
-                    radius: 22,
-                  ),
-                ),
-                onTap: () {
-                  pickImage(ImageSource.camera);
-                },
-              ),
-            ],
-          ),
-          tileColor: Colors.grey[200],
-        ),
-      );
-
   File? image;
-  var path;
+  dynamic path;
   pickImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
-
     if (image != null) {
       Uint8List imageBytes = await image.readAsBytes();
       pic = base64Encode(imageBytes);
-      print(pic);
     }
     setState(
       () {
@@ -178,75 +123,6 @@ class _AddrecordState extends State<Addrecord> {
     );
   }
 
-  //     final imageTemporary = await saveImagePermanently(image.path);
-  //     setState(() => this.image = imageTemporary);
-  //   } on PlatformException catch (e) {
-  //     print("Failed to pick image : $e");
-  //   }
-  // }
-
-  // Future<File> saveImagePermanently(String imagePath) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final name = basename(imagePath);
-  //   final image = File("${directoty.path}/$name");
-  // }
-  // takePhoto(ImageSource source) async {
-  //   images = (await _picker.pickImage(
-  //     source: source,
-  //   ));
-  //   if (images != null) {
-  //     Uint8List imageBytes = await images!.readAsBytes();
-  //     base64Image = base64Encode(imageBytes);
-  //     print(base64Image);
-  //   }
-
-  // setState(() {
-  //   if (images != null) {
-  //     path = images!.path;
-  //   }
-  // });
-  // }
-
-  //late XFile images;
-  // pickImageFromGallary(ImageSource source) {
-  //   imageFile = ImagePicker.pickImage(source: source) as Future<File>;
-  // }
-  // Widget imageDialog(BuildContext context) {
-  //   return AlertDialog(
-  //     content: Column(
-  //       children: [
-  //         Container(
-  //           child: ListTile(
-  //             contentPadding: EdgeInsets.symmetric(
-  //               vertical: 0.0,
-  //               horizontal: 15.0,
-  //             ),
-  //             leading: Text("fas"),
-  //             tileColor: Colors.grey[200],
-  //             onTap: () {},
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget RadioButtons() => Row(
-  //       children: [
-  //         RadioListTile<String>(
-  //           title: Text('Expense'),
-  //           value: "male",
-  //           groupValue: gender,
-  //           onChanged: (value) => setState(() => gender = value!),
-  //         ),
-  //         RadioListTile<String>(
-  //           title: Text('Income'),
-  //           value: "female",
-  //           groupValue: gender,
-  //           onChanged: (value) => setState(() => gender = value!),
-  //         ),
-  //       ],
-  //     );
   Widget buildName() => Container(
         child: TextFormField(
           decoration: InputDecoration(

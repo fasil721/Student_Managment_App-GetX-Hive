@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:student_records/pages/home_page.dart';
@@ -7,10 +9,17 @@ class StudentDetails extends StatelessWidget {
   String name;
   String age;
   String place;
+  dynamic pic;
   int index;
   var box;
-  StudentDetails(String this.name, String this.age, String this.place,
-      int this.index, var this.box);
+  StudentDetails(
+    String this.name,
+    String this.age,
+    String this.place,
+    dynamic this.pic,
+    int this.index,
+    var this.box,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -73,17 +82,7 @@ class StudentDetails extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            child: Image.asset(
-              "assets/images/av1.png",
-              height: 200,
-              width: 200,
-            ),
-          ),
+          showProfile(pic),
           Details(name, "Name :  "),
           Details(age, "Age :  "),
           Details(place, "Place :  ")
@@ -139,4 +138,33 @@ class Details extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget showProfile(dynamic pic) {
+  if (pic != null) {
+    Uint8List imageBytes = base64Decode(pic);
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+      ),
+      child: Image.memory(
+        imageBytes,
+        height: 200,
+        width: 200,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+  return Container(
+    clipBehavior: Clip.hardEdge,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+    ),
+    child: Image.asset(
+      "assets/images/av1.png",
+      height: 200,
+      width: 200,
+    ),
+  );
 }

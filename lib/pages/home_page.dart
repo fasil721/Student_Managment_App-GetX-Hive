@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +12,8 @@ import 'package:student_records/pages/student_detials.dart';
 
 class HomePage extends StatelessWidget {
   var names;
+  late Uint8List imageBytes;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,8 +104,11 @@ class HomePage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       Record? record = box.getAt(index);
                       this.names = record!.title;
-                      print(record.pic);
 
+                      if (record.pic != null) {
+                        imageBytes = base64Decode(record.pic);
+                        //showImage(record.pic);
+                      } else {}
                       return Container(
                         padding: EdgeInsets.all(6),
                         child: ListTile(
@@ -117,11 +121,17 @@ class HomePage extends StatelessWidget {
                             vertical: 7.0,
                             horizontal: 16.0,
                           ),
-                          leading: CircleAvatar(
-                            backgroundImage: AssetImage(
-                              "assets/images/av1.png",
+                          leading: Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                             ),
-                            radius: 25,
+                            child: Image.memory(
+                              imageBytes,
+                              height: 50,
+                              width: 50,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                           tileColor: Colors.white,
                           onTap: () {
@@ -132,6 +142,7 @@ class HomePage extends StatelessWidget {
                                   record.title,
                                   record.age,
                                   record.place,
+                                  record.pic,
                                   index,
                                   box,
                                 ),
@@ -158,14 +169,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-showImage(pic) {
-  print(pic);
-  // if (pic != null) {
-  //   Uint8List imageBytes = base64Decode(pic);
-  //   return imageBytes;
-  // } else {
-  //   return "assets/images/av1.png";
-  // }
 }

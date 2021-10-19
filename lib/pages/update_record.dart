@@ -27,21 +27,12 @@ class UpdateRecord extends StatefulWidget {
 }
 
 class _UpdateRecordState extends State<UpdateRecord> {
-  //late String title, place;
-  // submitData() async {
-  //   if (widget.formkey.currentState!.validate()) {
-  //     Box<Record> record = Hive.box<Record>('records');
-
-  //     Navigator.of(context).pop();
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       // backgroundColor: Colors.grey[200],
       title: Text(
-        "Add New Student",
+        "Edit Student Detials",
         style: GoogleFonts.rubik(
           fontStyle: FontStyle.normal,
           fontWeight: FontWeight.w500,
@@ -176,6 +167,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
                       record!.title,
                       record.age,
                       record.place,
+                      record.pic,
                       widget.index2,
                       widget.box2,
                     ),

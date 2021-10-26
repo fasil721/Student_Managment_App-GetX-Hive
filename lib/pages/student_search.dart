@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -55,6 +54,7 @@ class _StudentSearchState extends State<StudentSearch> {
                   ? Center(
                       child: Text(
                         'No results found !',
+                        style: TextStyle(fontSize: 15),
                       ),
                     )
                   : Container(
@@ -63,12 +63,13 @@ class _StudentSearchState extends State<StudentSearch> {
                         scrollDirection: Axis.vertical,
                         itemCount: results.length,
                         itemBuilder: (context, index) {
-                          Record? record = box.getAt(index);
+                          print(results);
+                          // Record? record = box.getAt(index);
 
-                          this.names = record!.title;
+                          this.names = results[index].title;
 
-                          if (record.pic != null) {
-                            imageBytes = base64Decode(record.pic);
+                          if (results[index].pic != null) {
+                            imageBytes = base64Decode(results[index].pic);
 
                             return Container(
                               padding: EdgeInsets.all(6),
@@ -100,10 +101,10 @@ class _StudentSearchState extends State<StudentSearch> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => StudentDetails(
-                                        record.title,
-                                        record.age,
-                                        record.place,
-                                        record.pic,
+                                        results[index].title,
+                                        results[index].age,
+                                        results[index].place,
+                                        results[index].pic,
                                         index,
                                         box,
                                       ),
@@ -111,7 +112,7 @@ class _StudentSearchState extends State<StudentSearch> {
                                   );
                                 },
                                 title: Text(
-                                  record.title,
+                                  results[index].title,
                                   style: GoogleFonts.montserrat(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
@@ -145,10 +146,10 @@ class _StudentSearchState extends State<StudentSearch> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => StudentDetails(
-                                      record.title,
-                                      record.age,
-                                      record.place,
-                                      record.pic,
+                                      results[index].title,
+                                      results[index].age,
+                                      results[index].place,
+                                      results[index].pic,
                                       index,
                                       box,
                                     ),
@@ -156,7 +157,7 @@ class _StudentSearchState extends State<StudentSearch> {
                                 );
                               },
                               title: Text(
-                                record.title,
+                                results[index].title,
                                 style: GoogleFonts.montserrat(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,

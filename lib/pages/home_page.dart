@@ -46,14 +46,15 @@ class HomePage extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Image.asset(
-              "assets/images/search.png",
-              alignment: Alignment.centerLeft,
-              width: 100,
-              height: 50,
+          Container(
+            padding: EdgeInsets.only(right: 8),
+            child: IconButton(
+              icon: Icon(
+                Icons.more_vert_sharp,
+                color: Colors.black87,
+              ),
+              onPressed: () {},
             ),
-            onPressed: () {},
           ),
         ],
       ),

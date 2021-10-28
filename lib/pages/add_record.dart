@@ -21,17 +21,12 @@ class Addrecord extends StatefulWidget {
 class _AddrecordState extends State<Addrecord> {
   late var title, age, place;
   dynamic pic;
-
+  dynamic id = 1;
   submitData(context) async {
     if (widget.formkey.currentState!.validate()) {
       Box<Record> todoBox = Hive.box<Record>('records');
       todoBox.add(
-        Record(
-          title,
-          age,
-          place,
-          pic,
-        ),
+        Record(title, age, place, pic),
       );
       Navigator.pushReplacement(
         context,

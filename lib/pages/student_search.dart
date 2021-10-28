@@ -14,7 +14,7 @@ class StudentSearch extends StatefulWidget {
 
 class _StudentSearchState extends State<StudentSearch> {
   String _searchText = "";
-
+  dynamic ind;
   late Uint8List imageBytes;
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,7 @@ class _StudentSearchState extends State<StudentSearch> {
                             .contains(_searchText.toLowerCase()),
                       )
                       .toList();
+
               return results.isEmpty
                   ? Center(
                       child: Text(
@@ -62,9 +63,16 @@ class _StudentSearchState extends State<StudentSearch> {
                         scrollDirection: Axis.vertical,
                         itemCount: results.length,
                         itemBuilder: (context, index) {
+                          var getIndex = box.values.toList();
+                          var get = box.values
+                              .where(
+                                (c) => c.title.contains(results[index].title),
+                              )
+                              .toList();
+
+                          final ind = getIndex.indexOf(get.first);
                           if (results[index].pic != null) {
                             imageBytes = base64Decode(results[index].pic);
-                            Record? record = box.getAt(index);
 
                             return Container(
                               padding: EdgeInsets.all(6),
@@ -100,7 +108,7 @@ class _StudentSearchState extends State<StudentSearch> {
                                           results[index].age,
                                           results[index].place,
                                           results[index].pic,
-                                          index,
+                                          ind,
                                           box),
                                     ),
                                   );
@@ -144,7 +152,7 @@ class _StudentSearchState extends State<StudentSearch> {
                                       results[index].age,
                                       results[index].place,
                                       results[index].pic,
-                                      index,
+                                      ind,
                                       box,
                                     ),
                                   ),

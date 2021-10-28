@@ -10,19 +10,20 @@ class StudentDetails extends StatelessWidget {
   String age;
   String place;
   dynamic pic;
-  int index;
+  final ind;
   var box;
   StudentDetails(
-    String this.name,
-    String this.age,
-    String this.place,
-    dynamic this.pic,
-    int this.index,
-    var this.box,
+    this.name,
+    this.age,
+    this.place,
+    this.pic,
+    this.ind,
+    this.box,
   );
 
   @override
   Widget build(BuildContext context) {
+    print(ind);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -40,7 +41,7 @@ class StudentDetails extends StatelessWidget {
                   age2: age,
                   place2: place,
                   box2: box,
-                  index2: index,
+                  index2: ind,
                 ),
               );
             },
@@ -51,7 +52,7 @@ class StudentDetails extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () async {
-              await box.deleteAt(index);
+              await box.deleteAt(ind);
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,

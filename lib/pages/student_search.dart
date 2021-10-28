@@ -14,7 +14,7 @@ class StudentSearch extends StatefulWidget {
 
 class _StudentSearchState extends State<StudentSearch> {
   String _searchText = "";
-  var names;
+
   late Uint8List imageBytes;
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,6 @@ class _StudentSearchState extends State<StudentSearch> {
               setState(
                 () {
                   _searchText = value;
-                  print(_searchText);
                 },
               );
             },
@@ -45,9 +44,9 @@ class _StudentSearchState extends State<StudentSearch> {
                   ? box.values.toList()
                   : box.values
                       .where(
-                        (c) => c.title.toLowerCase().contains(
-                              _searchText.toLowerCase(),
-                            ),
+                        (c) => c.title
+                            .toLowerCase()
+                            .contains(_searchText.toLowerCase()),
                       )
                       .toList();
               return results.isEmpty
@@ -63,13 +62,9 @@ class _StudentSearchState extends State<StudentSearch> {
                         scrollDirection: Axis.vertical,
                         itemCount: results.length,
                         itemBuilder: (context, index) {
-                          print(results);
-                          // Record? record = box.getAt(index);
-
-                          this.names = results[index].title;
-
                           if (results[index].pic != null) {
                             imageBytes = base64Decode(results[index].pic);
+                            Record? record = box.getAt(index);
 
                             return Container(
                               padding: EdgeInsets.all(6),
@@ -101,13 +96,12 @@ class _StudentSearchState extends State<StudentSearch> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => StudentDetails(
-                                        results[index].title,
-                                        results[index].age,
-                                        results[index].place,
-                                        results[index].pic,
-                                        index,
-                                        box,
-                                      ),
+                                          results[index].title,
+                                          results[index].age,
+                                          results[index].place,
+                                          results[index].pic,
+                                          index,
+                                          box),
                                     ),
                                   );
                                 },

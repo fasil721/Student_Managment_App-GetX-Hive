@@ -96,11 +96,11 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: Boxes.getInstance().listenable(),
-              builder: (context, Box<Record> box, _) {
-                List<int> keys = box.keys.cast<int>().toList();
+              builder: (context, Box box, _) {
+                List<Record> students = box.get("students");
                 List<Record> results = _searchText.isEmpty
-                    ? box.values.toList()
-                    : box.values
+                    ? students.toList()
+                    : students
                         .where(
                           (c) => c.title
                               .toLowerCase()
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 Get.to(
                                   () => StudentDetails(
-                                    keyName: keys[index],
+                                    student: results[index],
                                   ),
                                 );
                               },

@@ -8,15 +8,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/database/record_adapter.dart';
+import 'package:student_records/widgets/update_record.dart';
 
 // ignore: must_be_immutable
 class StudentDetails extends StatelessWidget {
-  StudentDetails({Key? key, required this.keyName}) : super(key: key);
-  int keyName;
-  Box<Record> box = Boxes.getInstance();
+  StudentDetails({Key? key, required this.student}) : super(key: key);
+  Record student;
+  Box box = Boxes.getInstance();
   @override
   Widget build(BuildContext context) {
-    Record? record = box.get(keyName);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -27,16 +27,12 @@ class StudentDetails extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-              // showDialog(
-              //   context: context,
-              //   builder: (context) => UpdateRecord(
-              //     title2: name,
-              //     age2: age,
-              //     place2: place,
-              //     box2: box,
-              //     index2: ind,
-              //   ),
-              // );
+              showDialog(
+                context: context,
+                builder: (context) => UpdateRecord(
+                  student: student,
+                ),
+              );
             },
           ),
           IconButton(
@@ -44,8 +40,10 @@ class StudentDetails extends StatelessWidget {
               Icons.delete,
               color: Colors.black,
             ),
-            onPressed: () async {
-              await box.delete(keyName);
+            onPressed: () {
+              List<Record> students =box.get("students");
+              students.removeWhere((element) => element.title == student.title);
+              box.put("students", students);
               Get.back();
             },
           ),
@@ -66,10 +64,10 @@ class StudentDetails extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          showProfile(record!.pic),
-          details(record.title, "Name :  "),
-          details(record.age, "Age :  "),
-          details(record.place, "Place :  ")
+          showProfile(student.pic),
+          details(student.title, "Name :  "),
+          details(student.age, "Age :  "),
+          details(student.place, "Place :  ")
         ],
       ),
     );

@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:student_records/database/box_instance.dart';
-import 'package:student_records/pages/home_page.dart';
 import 'package:student_records/database/record_adapter.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,7 +20,7 @@ class Addrecord extends StatefulWidget {
 
 class _AddrecordState extends State<Addrecord> {
   dynamic title, age, place, pic;
-  Box<Record> box = Boxes.getInstance();
+  Box box = Boxes.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +109,12 @@ class _AddrecordState extends State<Addrecord> {
           hintText: 'Enter Student Name',
         ),
         validator: (value) {
+          List<Record> students = box.get("students");
           if (value == "") {
             return "Student Name required";
+          }
+          if (students.where((element) => element.title == value).isNotEmpty) {
+            return "This name student already here";
           }
         },
         onChanged: (value) {
@@ -159,7 +162,8 @@ class _AddrecordState extends State<Addrecord> {
         ),
         onPressed: () {
           if (widget.formkey.currentState!.validate()) {
-            box.add(
+            List<Record> students = box.get("students");
+            students.add(
               Record(
                 title,
                 age,
@@ -167,6 +171,7 @@ class _AddrecordState extends State<Addrecord> {
                 pic,
               ),
             );
+            box.put("students", students);
             Get.back();
           }
         },

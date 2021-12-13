@@ -1,31 +1,19 @@
-import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:student_records/widgets/add_record.dart';
-import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/pages/student_detials.dart';
 import 'package:student_records/database/record_adapter.dart';
 import 'package:student_records/controllers.dart/student_controller.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+// ignore: use_key_in_widget_constructors, must_be_immutable
+class HomePage extends StatelessWidget {
   final formkey = GlobalKey<FormState>();
   final studentController = Get.find<StudentController>();
   dynamic title, age, place, pic;
-  String _searchText = "";
   Uint8List? imageBytes;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +25,7 @@ class _HomePageState extends State<HomePage> {
         ),
         onPressed: () => showDialog(
           context: context,
-          builder: (context) => const Addrecord(),
+          builder: (context) => Addrecord(),
         ),
         // onPressed: () => Get.defaultDialog(
         //   title: "Add New Student",
@@ -113,25 +101,19 @@ class _HomePageState extends State<HomePage> {
                 fillColor: Colors.grey,
               ),
               onChanged: (value) {
-                setState(
-                  () {
-                    _searchText = value;
-                  },
-                );
+                studentController.textSearch(value);
               },
             ),
           ),
           Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: Boxes.getInstance().listenable(),
-              builder: (context, Box<Record> box, _) {
-                List<Record> results = _searchText.isEmpty
-                    ? box.values.toList()
-                    : box.values
+            child: GetBuilder<StudentController>(
+              builder: (_) {
+                List<Record> results = studentController.searchText.isEmpty
+                    ? studentController.box.values.toList()
+                    : studentController.box.values
                         .where(
-                          (c) => c.title
-                              .toLowerCase()
-                              .contains(_searchText.toLowerCase()),
+                          (c) => c.title.toLowerCase().contains(
+                              studentController.searchText.toLowerCase()),
                         )
                         .toList();
 
@@ -212,117 +194,116 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget profileImage(dynamic pic) {
-    if (pic != null) {
-      imageBytes = base64Decode(pic);
-    }
-    return GestureDetector(
-      child: Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-        ),
-        child: pic == null
-            ? const CircleAvatar(
-                backgroundImage: AssetImage(
-                  "assets/images/av2.jpg",
-                ),
-                radius: 70,
-              )
-            : Image.memory(
-                imageBytes!,
-                height: 130,
-                width: 130,
-                fit: BoxFit.cover,
-              ),
-      ),
-      onTap: () => pickImage(ImageSource.gallery),
-    );
-  }
+  // Widget profileImage(dynamic pic) {
+  //   if (pic != null) {
+  //     imageBytes = base64Decode(pic);
+  //   }
+  //   return GestureDetector(
+  //     child: Container(
+  //       clipBehavior: Clip.hardEdge,
+  //       decoration: const BoxDecoration(
+  //         shape: BoxShape.circle,
+  //       ),
+  //       child: pic == null
+  //           ? const CircleAvatar(
+  //               backgroundImage: AssetImage(
+  //                 "assets/images/av2.jpg",
+  //               ),
+  //               radius: 70,
+  //             )
+  //           : Image.memory(
+  //               imageBytes!,
+  //               height: 130,
+  //               width: 130,
+  //               fit: BoxFit.cover,
+  //             ),
+  //     ),
+  //     onTap: () => pickImage(ImageSource.gallery),
+  //   );
+  // }
 
-  File? image;
+  // File? image;
 
-  dynamic path;
+  // dynamic path;
 
-  pickImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image != null) {
-      Uint8List imageBytes = await image.readAsBytes();
-      pic = base64Encode(imageBytes);
-    }
-    setState(() {
-      if (image != null) {
-        path = image.path;
-      }
-    });
-  }
+  // pickImage(ImageSource source) async {
+  //   final image = await ImagePicker().pickImage(source: source);
+  //   if (image != null) {
+  //     Uint8List imageBytes = await image.readAsBytes();
+  //     pic = base64Encode(imageBytes);
+  //   }
 
-  Widget buildName() => TextFormField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: 'Enter Student Name',
-        ),
-        validator: (value) {
-          if (value == "") {
-            return "Student Name required";
-          }
-        },
-        onChanged: (value) {
-          title = value;
-        },
-      );
+  //   if (image != null) {
+  //     path = image.path;
+  //   }
+  // }
 
-  Widget buildPlace() => TextFormField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: 'Enter Place Name',
-        ),
-        validator: (value) {
-          if (value == "") {
-            return "Place Name required";
-          }
-        },
-        onChanged: (value) {
-          place = value;
-        },
-      );
+  // Widget buildName() => TextFormField(
+  //       decoration: const InputDecoration(
+  //         border: OutlineInputBorder(),
+  //         hintText: 'Enter Student Name',
+  //       ),
+  //       validator: (value) {
+  //         if (value == "") {
+  //           return "Student Name required";
+  //         }
+  //       },
+  //       onChanged: (value) {
+  //         title = value;
+  //       },
+  //     );
 
-  Widget buildAge() => TextFormField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: 'Enter Student Age',
-        ),
-        validator: (value) {
-          if (value == "") {
-            return "Student Age required";
-          }
-        },
-        onChanged: (value) {
-          age = value;
-        },
-      );
+  // Widget buildPlace() => TextFormField(
+  //       decoration: const InputDecoration(
+  //         border: OutlineInputBorder(),
+  //         hintText: 'Enter Place Name',
+  //       ),
+  //       validator: (value) {
+  //         if (value == "") {
+  //           return "Place Name required";
+  //         }
+  //       },
+  //       onChanged: (value) {
+  //         place = value;
+  //       },
+  //     );
 
-  Widget cancelButton() => TextButton(
-        child: const Text(
-          'Cancel',
-          style: TextStyle(color: Colors.black),
-        ),
-        onPressed: () => Get.back(),
-      );
+  // Widget buildAge() => TextFormField(
+  //       decoration: const InputDecoration(
+  //         border: OutlineInputBorder(),
+  //         hintText: 'Enter Student Age',
+  //       ),
+  //       validator: (value) {
+  //         if (value == "") {
+  //           return "Student Age required";
+  //         }
+  //       },
+  //       onChanged: (value) {
+  //         age = value;
+  //       },
+  //     );
 
-  Widget submitButton() => ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: Colors.grey[200],
-        ),
-        onPressed: () {
-          if (formkey.currentState!.validate()) {
-            studentController.addStudent(title, age, place, pic);
-            Get.back();
-          }
-        },
-        child: const Text(
-          'Save',
-          style: TextStyle(color: Colors.black),
-        ),
-      );
+  // Widget cancelButton() => TextButton(
+  //       child: const Text(
+  //         'Cancel',
+  //         style: TextStyle(color: Colors.black),
+  //       ),
+  //       onPressed: () => Get.back(),
+  //     );
+
+  // Widget submitButton() => ElevatedButton(
+  //       style: ElevatedButton.styleFrom(
+  //         primary: Colors.grey[200],
+  //       ),
+  //       onPressed: () {
+  //         if (formkey.currentState!.validate()) {
+  //           studentController.addStudent(title, age, place, pic);
+  //           Get.back();
+  //         }
+  //       },
+  //       child: const Text(
+  //         'Save',
+  //         style: TextStyle(color: Colors.black),
+  //       ),
+  //     );
 }

@@ -15,7 +15,7 @@ void main() async {
       getPages: [
         GetPage(
           name: "/HomePage",
-          page: () => const HomePage(),
+          page: () => HomePage(),
           binding: StudentBinding(),
         ),
       ],

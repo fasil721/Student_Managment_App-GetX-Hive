@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,14 +6,9 @@ import 'package:student_records/controllers.dart/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Addrecord extends StatefulWidget {
-  const Addrecord({Key? key}) : super(key: key);
-
-  @override
-  State<Addrecord> createState() => _AddrecordState();
-}
-
-class _AddrecordState extends State<Addrecord> {
+// ignore: must_be_immutable
+class Addrecord extends StatelessWidget {
+  Addrecord({Key? key}) : super(key: key);
   dynamic title, age, place, pic;
   Box box = Boxes.getInstance();
   final formkey = GlobalKey<FormState>();
@@ -40,7 +32,7 @@ class _AddrecordState extends State<Addrecord> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const SizedBox(height: 5),
-              profileImage(pic),
+              profileImage(),
               const SizedBox(height: 8),
               buildName(),
               const SizedBox(height: 5),
@@ -58,52 +50,32 @@ class _AddrecordState extends State<Addrecord> {
     );
   }
 
-  Widget profileImage(dynamic pic) {
-    if (pic != null) {
-      Uint8List imageBytes = base64Decode(pic);
-      return GestureDetector(
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
+  Widget profileImage() => GetBuilder<StudentController>(
+        builder: (_) => GestureDetector(
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: studentController.imageBytes == null
+                ? const CircleAvatar(
+                    backgroundImage: AssetImage(
+                      "assets/images/av2.jpg",
+                    ),
+                    radius: 70,
+                  )
+                : Image.memory(
+                    studentController.imageBytes!,
+                    height: 130,
+                    width: 130,
+                    fit: BoxFit.cover,
+                  ),
           ),
-          child: Image.memory(
-            imageBytes,
-            height: 130,
-            width: 130,
-            fit: BoxFit.cover,
-          ),
+          onTap: () async {
+            pic = await studentController.pickImage(ImageSource.gallery, pic);
+          },
         ),
-        onTap: () => pickImage(ImageSource.gallery),
       );
-    }
-    return GestureDetector(
-      child: const CircleAvatar(
-        backgroundImage: AssetImage(
-          "assets/images/av2.jpg",
-        ),
-        radius: 70,
-      ),
-      onTap: () => pickImage(ImageSource.gallery),
-    );
-  }
-
-  File? image;
-
-  dynamic path;
-
-  pickImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image != null) {
-      Uint8List imageBytes = await image.readAsBytes();
-      pic = base64Encode(imageBytes);
-    }
-    setState(() {
-      if (image != null) {
-        path = image.path;
-      }
-    });
-  }
 
   Widget buildName() => TextFormField(
         decoration: const InputDecoration(
@@ -164,7 +136,9 @@ class _AddrecordState extends State<Addrecord> {
         ),
         onPressed: () {
           if (formkey.currentState!.validate()) {
+            print(pic);
             studentController.addStudent(title, age, place, pic);
+            studentController.imageBytes = null;
             Get.back();
           }
         },

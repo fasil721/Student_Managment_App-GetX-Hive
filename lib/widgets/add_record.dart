@@ -5,22 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:student_records/controllers.dart/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
-import 'package:student_records/database/record_adapter.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Addrecord extends StatefulWidget {
-  final formkey = GlobalKey<FormState>();
-
-  Addrecord({Key? key}) : super(key: key);
+  const Addrecord({Key? key}) : super(key: key);
 
   @override
-  _AddrecordState createState() => _AddrecordState();
+  State<Addrecord> createState() => _AddrecordState();
 }
 
 class _AddrecordState extends State<Addrecord> {
   dynamic title, age, place, pic;
   Box box = Boxes.getInstance();
+  final formkey = GlobalKey<FormState>();
+  final studentController = Get.find<StudentController>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class _AddrecordState extends State<Addrecord> {
         ),
       ),
       content: Form(
-        key: widget.formkey,
+        key: formkey,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -52,8 +52,8 @@ class _AddrecordState extends State<Addrecord> {
         ),
       ),
       actions: <Widget>[
-        cancelButton(context),
-        submitButton(context),
+        cancelButton(),
+        submitButton(),
       ],
     );
   }
@@ -89,7 +89,9 @@ class _AddrecordState extends State<Addrecord> {
   }
 
   File? image;
+
   dynamic path;
+
   pickImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image != null) {
@@ -109,18 +111,15 @@ class _AddrecordState extends State<Addrecord> {
           hintText: 'Enter Student Name',
         ),
         validator: (value) {
-          List<Record> students = box.get("students");
           if (value == "") {
             return "Student Name required";
-          }
-          if (students.where((element) => element.title == value).isNotEmpty) {
-            return "This name student already here";
           }
         },
         onChanged: (value) {
           title = value;
         },
       );
+
   Widget buildPlace() => TextFormField(
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -135,6 +134,7 @@ class _AddrecordState extends State<Addrecord> {
           place = value;
         },
       );
+
   Widget buildAge() => TextFormField(
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -149,29 +149,22 @@ class _AddrecordState extends State<Addrecord> {
           age = value;
         },
       );
-  Widget cancelButton(BuildContext context) => TextButton(
+
+  Widget cancelButton() => TextButton(
         child: const Text(
           'Cancel',
           style: TextStyle(color: Colors.black),
         ),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => Get.back(),
       );
-  Widget submitButton(BuildContext context) => ElevatedButton(
+
+  Widget submitButton() => ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: Colors.grey[200],
         ),
         onPressed: () {
-          if (widget.formkey.currentState!.validate()) {
-            List<Record> students = box.get("students");
-            students.add(
-              Record(
-                title,
-                age,
-                place,
-                pic,
-              ),
-            );
-            box.put("students", students);
+          if (formkey.currentState!.validate()) {
+            studentController.addStudent(title, age, place, pic);
             Get.back();
           }
         },

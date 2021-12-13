@@ -1,11 +1,10 @@
-// ignore_for_file: type_init_formals
-
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:student_records/controllers.dart/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/database/record_adapter.dart';
 import 'package:student_records/widgets/update_record.dart';
@@ -13,8 +12,11 @@ import 'package:student_records/widgets/update_record.dart';
 // ignore: must_be_immutable
 class StudentDetails extends StatelessWidget {
   StudentDetails({Key? key, required this.student}) : super(key: key);
+
   Record student;
-  Box box = Boxes.getInstance();
+  final studentController = Get.find<StudentController>();
+  Box<Record> box = Boxes.getInstance();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,9 +43,7 @@ class StudentDetails extends StatelessWidget {
               color: Colors.black,
             ),
             onPressed: () {
-              List<Record> students =box.get("students");
-              students.removeWhere((element) => element.title == student.title);
-              box.put("students", students);
+              studentController.deleteStudent(student.key);
               Get.back();
             },
           ),
@@ -62,79 +62,80 @@ class StudentDetails extends StatelessWidget {
           },
         ),
       ),
-      body: ListView(
-        children: [
-          showProfile(student.pic),
-          details(student.title, "Name :  "),
-          details(student.age, "Age :  "),
-          details(student.place, "Place :  ")
-        ],
+      body: GetBuilder(
+        builder: (StudentController studentController) {
+          return ListView(
+            children: [
+              showProfile(student.pic),
+              details(student.title, "Name :  "),
+              details(student.age, "Age :  "),
+              details(student.place, "Place :  ")
+            ],
+          );
+        },
       ),
     );
   }
-}
 
-// ignore: must_be_immutable
-Widget details(dynamic name, String heading) {
-  return Container(
-    padding: const EdgeInsets.only(
-      top: 10,
-      left: 40,
-      right: 40,
-    ),
-    child: ListTile(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10),
+  Widget details(dynamic name, String heading) => Container(
+        padding: const EdgeInsets.only(
+          top: 10,
+          left: 40,
+          right: 40,
         ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 0.0,
-        horizontal: 16.0,
-      ),
-      tileColor: Colors.white,
-      title: Row(
-        children: <Widget>[
-          Text(heading),
-          Text(
-            name,
-            style: GoogleFonts.rubik(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontStyle: FontStyle.normal,
+        child: ListTile(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
             ),
           ),
-        ],
-      ),
-    ),
-  );
-}
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 0.0,
+            horizontal: 16.0,
+          ),
+          tileColor: Colors.white,
+          title: Row(
+            children: <Widget>[
+              Text(heading),
+              Text(
+                name,
+                style: GoogleFonts.rubik(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
 
-Widget showProfile(dynamic pic) {
-  if (pic != null) {
-    Uint8List imageBytes = base64Decode(pic);
+  Widget showProfile(dynamic pic) {
+    if (pic != null) {
+      Uint8List imageBytes = base64Decode(pic);
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: Image.memory(
+          imageBytes,
+          height: 200,
+          width: 200,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
       ),
-      child: Image.memory(
-        imageBytes,
+      child: Image.asset(
+        "assets/images/av1.png",
         height: 200,
         width: 200,
-        fit: BoxFit.cover,
       ),
     );
   }
-  return Container(
-    clipBehavior: Clip.hardEdge,
-    decoration: const BoxDecoration(
-      shape: BoxShape.circle,
-    ),
-    child: Image.asset(
-      "assets/images/av1.png",
-      height: 200,
-      width: 200,
-    ),
-  );
 }

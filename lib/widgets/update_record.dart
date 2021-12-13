@@ -6,20 +6,16 @@ import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/database/record_adapter.dart';
 
 // ignore: must_be_immutable
-class UpdateRecord extends StatefulWidget {
+class UpdateRecord extends StatelessWidget {
   UpdateRecord({Key? key, required this.student}) : super(key: key);
-  Record student;
-  Box box = Boxes.getInstance();
 
+  Record student;
+  Box<Record> box = Boxes.getInstance();
   final formkey = GlobalKey<FormState>();
 
   @override
-  _UpdateRecordState createState() => _UpdateRecordState();
-}
-
-class _UpdateRecordState extends State<UpdateRecord> {
-  @override
   Widget build(BuildContext context) {
+    Record? record = box.get(student.key);
     return AlertDialog(
       title: Text(
         "Edit Student Detials",
@@ -30,115 +26,96 @@ class _UpdateRecordState extends State<UpdateRecord> {
         ),
       ),
       content: Form(
-        key: widget.formkey,
+        key: formkey,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const SizedBox(height: 8),
-              buildName(),
+              buildName(record!),
               const SizedBox(height: 8),
-              buildAge(),
+              buildAge(record),
               const SizedBox(height: 8),
-              buildPlace(),
+              buildPlace(record),
             ],
           ),
         ),
       ),
       actions: <Widget>[
-        cancelButton(context),
-        submitButton(context),
+        cancelButton(),
+        submitButton(record),
       ],
     );
   }
 
-  Widget buildAge() => Builder(
-        builder: (context) {
-          return TextFormField(
-            initialValue: widget.student.age,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter Student Age',
-            ),
-            validator: (value) {
-              if (value == "") {
-                return "Student Age required";
-              }
-            },
-            onChanged: (value) {
-              // record!.age = value;
-              // record.save();
-            },
-          );
+  Widget buildAge(Record record) => TextFormField(
+        initialValue: student.age,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Enter Student Age',
+        ),
+        validator: (value) {
+          if (value == "") {
+            return "Student Age required";
+          }
+        },
+        onChanged: (value) {
+          record.age = value;
         },
       );
 
-  Widget buildName() => Builder(
-        builder: (context) {
-          // Record? record = widget.student.title;
-          return TextFormField(
-            initialValue: widget.student.title,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter Student Name',
-            ),
-            validator: (value) {
-              if (value == "") {
-                return "Student Name required";
-              }
-            },
-            onChanged: (value) {
-              // record!.title = value;
-              // record.save();
-            },
-          );
+  Widget buildName(Record record) => TextFormField(
+        initialValue: student.title,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Enter Student Name',
+        ),
+        validator: (value) {
+          if (value == "") {
+            return "Student Name required";
+          }
+        },
+        onChanged: (value) {
+          record.title = value;
         },
       );
-  Widget buildPlace() => Builder(
-        builder: (context) {
-          // Record? record = widget.box2.getAt(widget.index2);
-          return TextFormField(
-            initialValue: widget.student.place,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Enter Student Place',
-            ),
-            validator: (value) {
-              if (value == "") {
-                return "Student Place required";
-              }
-            },
-            onChanged: (value) {
-              // record!.place = value;
-              // record.save();
-            },
-          );
+
+  Widget buildPlace(Record record) => TextFormField(
+        initialValue: student.place,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: 'Enter Student Place',
+        ),
+        validator: (value) {
+          if (value == "") {
+            return "Student Place required";
+          }
+        },
+        onChanged: (value) {
+          record.place = value;
         },
       );
-  Widget cancelButton(BuildContext context) => TextButton(
+
+  Widget cancelButton() => TextButton(
         child: const Text(
           'Cancel',
           style: TextStyle(color: Colors.black),
         ),
         onPressed: () => Get.back(),
       );
-  Widget submitButton(BuildContext context) => Builder(
-        builder: (context) {
-          // Record? record = widget.box2.getAt(widget.index2);
-          return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.grey[200],
-            ),
-            onPressed: () {
-              if (widget.formkey.currentState!.validate()) {
-                // Get.back();
-              }
-            },
-            child: const Text(
-              'Save',
-              style: TextStyle(color: Colors.black),
-            ),
-          );
+  Widget submitButton(Record record) => ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.grey[200],
+        ),
+        onPressed: () {
+          if (formkey.currentState!.validate()) {
+            record.save();
+            Get.back();
+          }
         },
+        child: const Text(
+          'Save',
+          style: TextStyle(color: Colors.black),
+        ),
       );
 }

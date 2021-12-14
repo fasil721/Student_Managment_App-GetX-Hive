@@ -9,7 +9,6 @@ import 'package:student_records/database/record_adapter.dart';
 class StudentController extends GetxController {
   Box<Record> box = Boxes.getInstance();
   Uint8List? imageBytes;
-  String searchText = "";
 
   addStudent(String title, int age, String place, pic) {
     box.add(
@@ -20,11 +19,6 @@ class StudentController extends GetxController {
 
   deleteStudent(int key) {
     box.delete(key);
-    update();
-  }
-
-  textSearch(String txt) {
-    searchText = txt;
     update();
   }
 

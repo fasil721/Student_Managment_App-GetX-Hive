@@ -9,8 +9,8 @@ import 'package:student_records/database/record_adapter.dart';
 
 // ignore: must_be_immutable
 class SearchPage extends StatelessWidget {
-  const SearchPage({Key? key}) : super(key: key);
-
+  SearchPage({Key? key}) : super(key: key);
+  String searchText = "";
   @override
   Widget build(BuildContext context) {
     final studentController = Get.find<StudentController>();
@@ -55,103 +55,105 @@ class SearchPage extends StatelessWidget {
                   fillColor: Colors.grey,
                 ),
                 onChanged: (value) {
-                  studentController.textSearch(value);
+                  searchText = value;
+                  studentController.update();
                 },
               ),
             ),
-            studentController.searchText.isNotEmpty
-                ? Expanded(
-                    child: GetBuilder<StudentController>(
-                      builder: (_) {
-                        List<Record> results = studentController.box.values
-                            .where(
-                              (c) => c.title!.toLowerCase().contains(
-                                  studentController.searchText.toLowerCase()),
-                            )
-                            .toList();
-                        return results.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No results found !',
-                                  style: GoogleFonts.roboto(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              )
-                            : ListView.separated(
-                                scrollDirection: Axis.vertical,
-                                physics: const ScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: results.length,
-                                itemBuilder: (context, index) {
-                                  Uint8List? imageBytes;
-                                  if (results[index].pic != null) {
-                                    imageBytes =
-                                        base64Decode(results[index].pic!);
-                                  }
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: ListTile(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        vertical: 7.0,
-                                        horizontal: 16.0,
-                                      ),
-                                      leading: Container(
-                                        clipBehavior: Clip.hardEdge,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: results[index].pic == null
-                                            ? const CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                  "assets/images/av1.png",
-                                                ),
-                                                radius: 25,
-                                              )
-                                            : Image.memory(
-                                                imageBytes!,
-                                                height: 50,
-                                                width: 50,
-                                                fit: BoxFit.cover,
-                                              ),
-                                      ),
-                                      tileColor: Colors.white,
-                                      onTap: () {
-                                        Get.to(
-                                          () => StudentDetails(
-                                            student: results[index],
-                                          ),
-                                        );
-                                      },
-                                      title: Text(
-                                        results[index].title!,
-                                        style: GoogleFonts.montserrat(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          fontStyle: FontStyle.normal,
-                                        ),
+            Expanded(
+              child: GetBuilder<StudentController>(
+                builder: (_) {
+                  List<Record> results = studentController.box.values
+                      .where(
+                        (c) => c.title!
+                            .toLowerCase()
+                            .contains(searchText.toLowerCase()),
+                      )
+                      .toList();
+                  return results.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No results found !',
+                            style: GoogleFonts.roboto(
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        )
+                      : searchText.isEmpty
+                          ? Container()
+                          : ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              physics: const ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: results.length,
+                              itemBuilder: (context, index) {
+                                Uint8List? imageBytes;
+                                if (results[index].pic != null) {
+                                  imageBytes =
+                                      base64Decode(results[index].pic!);
+                                }
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: ListTile(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
                                       ),
                                     ),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        const SizedBox(height: 10),
-                              );
-                      },
-                    ),
-                  )
-                : Container(),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 7.0,
+                                      horizontal: 16.0,
+                                    ),
+                                    leading: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: results[index].pic == null
+                                          ? const CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                "assets/images/av1.png",
+                                              ),
+                                              radius: 25,
+                                            )
+                                          : Image.memory(
+                                              imageBytes!,
+                                              height: 50,
+                                              width: 50,
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                    tileColor: Colors.white,
+                                    onTap: () {
+                                      Get.to(
+                                        () => StudentDetails(
+                                          student: results[index],
+                                        ),
+                                      );
+                                    },
+                                    title: Text(
+                                      results[index].title!,
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const SizedBox(height: 10),
+                            );
+                },
+              ),
+            )
+            // : Container(),
           ],
         ),
       ),

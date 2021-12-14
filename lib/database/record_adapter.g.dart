@@ -17,9 +17,9 @@ class RecordAdapter extends TypeAdapter<Record> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Record(
-      fields[0] as dynamic,
-      fields[1] as dynamic,
-      fields[2] as dynamic,
+      fields[0] as String?,
+      fields[1] as int?,
+      fields[2] as String?,
       fields[3] as dynamic,
     );
   }

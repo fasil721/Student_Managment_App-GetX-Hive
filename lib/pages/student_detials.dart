@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:student_records/controllers.dart/student_controller.dart';
+import 'package:student_records/controller/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/database/record_adapter.dart';
 import 'package:student_records/widgets/update_record.dart';
@@ -68,7 +68,7 @@ class StudentDetails extends StatelessWidget {
             children: [
               showProfile(student.pic),
               details(student.title, "Name :  "),
-              details(student.age, "Age :  "),
+              details(student.age.toString(), "Age :  "),
               details(student.place, "Place :  ")
             ],
           );

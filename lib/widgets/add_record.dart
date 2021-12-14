@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:student_records/controllers.dart/student_controller.dart';
+import 'package:student_records/controller/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
 class Addrecord extends StatelessWidget {
   Addrecord({Key? key}) : super(key: key);
-  dynamic title, age, place, pic;
+  String? title, place;
+  dynamic pic;
+  int? age;
   Box box = Boxes.getInstance();
   final formkey = GlobalKey<FormState>();
   final studentController = Get.find<StudentController>();
@@ -72,7 +74,7 @@ class Addrecord extends StatelessWidget {
                   ),
           ),
           onTap: () async {
-            pic = await studentController.pickImage(ImageSource.gallery, pic);
+            pic = await studentController.pickImage(ImageSource.gallery);
           },
         ),
       );
@@ -108,6 +110,7 @@ class Addrecord extends StatelessWidget {
       );
 
   Widget buildAge() => TextFormField(
+        keyboardType: TextInputType.phone,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Enter Student Age',
@@ -118,7 +121,7 @@ class Addrecord extends StatelessWidget {
           }
         },
         onChanged: (value) {
-          age = value;
+          age = int.parse(value);
         },
       );
 
@@ -136,8 +139,7 @@ class Addrecord extends StatelessWidget {
         ),
         onPressed: () {
           if (formkey.currentState!.validate()) {
-            print(pic);
-            studentController.addStudent(title, age, place, pic);
+            studentController.addStudent(title!, age!, place!, pic);
             studentController.imageBytes = null;
             Get.back();
           }

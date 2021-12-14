@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:student_records/controller/student_controller.dart';
 import 'package:student_records/database/box_instance.dart';
 import 'package:student_records/database/record_adapter.dart';
 
@@ -12,7 +13,7 @@ class UpdateRecord extends StatelessWidget {
   Record student;
   Box<Record> box = Boxes.getInstance();
   final formkey = GlobalKey<FormState>();
-
+  final studentController = Get.find<StudentController>();
   @override
   Widget build(BuildContext context) {
     Record? record = box.get(student.key);
@@ -49,7 +50,8 @@ class UpdateRecord extends StatelessWidget {
   }
 
   Widget buildAge(Record record) => TextFormField(
-        initialValue: student.age,
+        initialValue: student.age.toString(),
+        keyboardType: TextInputType.phone,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Enter Student Age',
@@ -60,7 +62,9 @@ class UpdateRecord extends StatelessWidget {
           }
         },
         onChanged: (value) {
-          record.age = value;
+          if (value.isNotEmpty) {
+            record.age = int.parse(value);
+          }
         },
       );
 
@@ -110,6 +114,7 @@ class UpdateRecord extends StatelessWidget {
         onPressed: () {
           if (formkey.currentState!.validate()) {
             record.save();
+            studentController.update();
             Get.back();
           }
         },

@@ -5,11 +5,11 @@ part 'record_adapter.g.dart';
 @HiveType(typeId: 1)
 class Record extends HiveObject {
   @HiveField(0)
-  dynamic title;
+  String? title;
   @HiveField(1)
-  dynamic age;
+  int? age;
   @HiveField(2)
-  dynamic place;
+  String? place;
   @HiveField(3)
   dynamic pic;
 

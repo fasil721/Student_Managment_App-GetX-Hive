@@ -5,7 +5,6 @@ class Boxes {
   static Box<Record>? _box;
 
   static Box<Record> getInstance() {
-    _box ??= Hive.box('records');
-    return _box!;
+    return _box ??= Hive.box('records');
   }
 }

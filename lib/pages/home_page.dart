@@ -3,16 +3,18 @@ import 'dart:typed_data';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:student_records/controller/student_controller.dart';
+import 'package:student_records/database/record_adapter.dart';
+import 'package:student_records/pages/search_page.dart';
 import 'package:student_records/widgets/add_record.dart';
 import 'package:student_records/pages/student_detials.dart';
-import 'package:student_records/database/record_adapter.dart';
-import 'package:student_records/controllers.dart/student_controller.dart';
 
-// ignore: use_key_in_widget_constructors, must_be_immutable
 class HomePage extends StatelessWidget {
   final formkey = GlobalKey<FormState>();
   final studentController = Get.find<StudentController>();
-  dynamic title, age, place, pic;
+  String? title, place;
+  dynamic pic;
+  int? age;
   Uint8List? imageBytes;
   @override
   Widget build(BuildContext context) {
@@ -27,28 +29,6 @@ class HomePage extends StatelessWidget {
           context: context,
           builder: (context) => Addrecord(),
         ),
-        // onPressed: () => Get.defaultDialog(
-        //   title: "Add New Student",
-        //   content: Form(
-        //     key: formkey,
-        //     child: Column(
-        //       children: <Widget>[
-        //         const SizedBox(height: 5),
-        //         profileImage(pic),
-        //         const SizedBox(height: 8),
-        //         buildName(),
-        //         const SizedBox(height: 5),
-        //         buildAge(),
-        //         const SizedBox(height: 5),
-        //         buildPlace(),
-        //       ],
-        //     ),
-        //   ),
-        //   actions: <Widget>[
-        //     cancelButton(),
-        //     submitButton(),
-        //   ],
-        // ),
       ),
       backgroundColor: Colors.grey[200],
       drawer: Drawer(
@@ -65,9 +45,11 @@ class HomePage extends StatelessWidget {
         actions: [
           Container(
             padding: const EdgeInsets.only(right: 8),
-            child: const Icon(
-              Icons.more_vert_sharp,
-              color: Colors.black87,
+            child: IconButton(
+              icon: Image.asset("assets/images/search.png"),
+              onPressed: () {
+                Get.to(() => SearchPage());
+              },
             ),
           ),
           const SizedBox(
@@ -78,6 +60,7 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: [
           Container(
+            margin: const EdgeInsets.only(bottom: 10),
             color: Colors.grey[200],
             alignment: Alignment.center,
             child: Text(
@@ -89,38 +72,13 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 10,
-            ),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Search Student",
-                fillColor: Colors.grey,
-              ),
-              onChanged: (value) {
-                studentController.textSearch(value);
-              },
-            ),
-          ),
           Expanded(
             child: GetBuilder<StudentController>(
               builder: (_) {
-                List<Record> results = studentController.searchText.isEmpty
-                    ? studentController.box.values.toList()
-                    : studentController.box.values
-                        .where(
-                          (c) => c.title.toLowerCase().contains(
-                              studentController.searchText.toLowerCase()),
-                        )
-                        .toList();
-
-                return results.isEmpty
+                return studentController.box.values.isEmpty
                     ? const Center(
                         child: Text(
-                          'No results found !',
+                          'No Students records',
                           style: TextStyle(fontSize: 15),
                         ),
                       )
@@ -128,10 +86,11 @@ class HomePage extends StatelessWidget {
                         scrollDirection: Axis.vertical,
                         physics: const ScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: results.length,
+                        itemCount: studentController.box.values.length,
                         itemBuilder: (context, index) {
-                          if (results[index].pic != null) {
-                            imageBytes = base64Decode(results[index].pic);
+                          Record? record = studentController.box.getAt(index);
+                          if (record!.pic != null) {
+                            imageBytes = base64Decode(record.pic!);
                           }
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -150,7 +109,7 @@ class HomePage extends StatelessWidget {
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                 ),
-                                child: results[index].pic == null
+                                child: record.pic == null
                                     ? const CircleAvatar(
                                         backgroundImage: AssetImage(
                                           "assets/images/av1.png",
@@ -168,12 +127,12 @@ class HomePage extends StatelessWidget {
                               onTap: () {
                                 Get.to(
                                   () => StudentDetails(
-                                    student: results[index],
+                                    student: record,
                                   ),
                                 );
                               },
                               title: Text(
-                                results[index].title,
+                                record.title!,
                                 style: GoogleFonts.montserrat(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w500,
@@ -193,117 +152,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  // Widget profileImage(dynamic pic) {
-  //   if (pic != null) {
-  //     imageBytes = base64Decode(pic);
-  //   }
-  //   return GestureDetector(
-  //     child: Container(
-  //       clipBehavior: Clip.hardEdge,
-  //       decoration: const BoxDecoration(
-  //         shape: BoxShape.circle,
-  //       ),
-  //       child: pic == null
-  //           ? const CircleAvatar(
-  //               backgroundImage: AssetImage(
-  //                 "assets/images/av2.jpg",
-  //               ),
-  //               radius: 70,
-  //             )
-  //           : Image.memory(
-  //               imageBytes!,
-  //               height: 130,
-  //               width: 130,
-  //               fit: BoxFit.cover,
-  //             ),
-  //     ),
-  //     onTap: () => pickImage(ImageSource.gallery),
-  //   );
-  // }
-
-  // File? image;
-
-  // dynamic path;
-
-  // pickImage(ImageSource source) async {
-  //   final image = await ImagePicker().pickImage(source: source);
-  //   if (image != null) {
-  //     Uint8List imageBytes = await image.readAsBytes();
-  //     pic = base64Encode(imageBytes);
-  //   }
-
-  //   if (image != null) {
-  //     path = image.path;
-  //   }
-  // }
-
-  // Widget buildName() => TextFormField(
-  //       decoration: const InputDecoration(
-  //         border: OutlineInputBorder(),
-  //         hintText: 'Enter Student Name',
-  //       ),
-  //       validator: (value) {
-  //         if (value == "") {
-  //           return "Student Name required";
-  //         }
-  //       },
-  //       onChanged: (value) {
-  //         title = value;
-  //       },
-  //     );
-
-  // Widget buildPlace() => TextFormField(
-  //       decoration: const InputDecoration(
-  //         border: OutlineInputBorder(),
-  //         hintText: 'Enter Place Name',
-  //       ),
-  //       validator: (value) {
-  //         if (value == "") {
-  //           return "Place Name required";
-  //         }
-  //       },
-  //       onChanged: (value) {
-  //         place = value;
-  //       },
-  //     );
-
-  // Widget buildAge() => TextFormField(
-  //       decoration: const InputDecoration(
-  //         border: OutlineInputBorder(),
-  //         hintText: 'Enter Student Age',
-  //       ),
-  //       validator: (value) {
-  //         if (value == "") {
-  //           return "Student Age required";
-  //         }
-  //       },
-  //       onChanged: (value) {
-  //         age = value;
-  //       },
-  //     );
-
-  // Widget cancelButton() => TextButton(
-  //       child: const Text(
-  //         'Cancel',
-  //         style: TextStyle(color: Colors.black),
-  //       ),
-  //       onPressed: () => Get.back(),
-  //     );
-
-  // Widget submitButton() => ElevatedButton(
-  //       style: ElevatedButton.styleFrom(
-  //         primary: Colors.grey[200],
-  //       ),
-  //       onPressed: () {
-  //         if (formkey.currentState!.validate()) {
-  //           studentController.addStudent(title, age, place, pic);
-  //           Get.back();
-  //         }
-  //       },
-  //       child: const Text(
-  //         'Save',
-  //         style: TextStyle(color: Colors.black),
-  //       ),
-  //     );
 }
